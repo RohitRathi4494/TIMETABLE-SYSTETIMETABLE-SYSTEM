@@ -1,6 +1,6 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useMemo } from 'react';
 import {
-  DndContext, DragOverlay, PointerSensor, useSensor, useSensors,
+  DndContext, DragOverlay, MouseSensor, TouchSensor, KeyboardSensor, useSensor, useSensors,
   useDroppable, useDraggable, closestCenter
 } from '@dnd-kit/core';
 import {
@@ -131,7 +131,15 @@ export function TimetableGrid() {
   const [showModal, setShowModal] = useState(false);
   const [editPeriod, setEditPeriod] = useState(null);
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const sensors = useSensors(
+    useSensor(MouseSensor, {
+      activationConstraint: { distance: 5 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 5 },
+    }),
+    useSensor(KeyboardSensor)
+  );
 
   const conflicts = detectConflicts(periods, teachers, classes, subjects, rooms);
   const conflictPeriodIds = new Set(conflicts.flatMap(c => c.affectedPeriods));

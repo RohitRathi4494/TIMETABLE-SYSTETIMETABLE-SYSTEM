@@ -93,9 +93,10 @@
     @apply relative rounded-xl p-2.5 cursor-grab active:cursor-grabbing
            border border-transparent hover:border-brand-500/30
            transition-all duration-200 select-none;
+    touch-action: none;
   }
   .period-cell:hover { transform: translateY(-1px); }
-  .period-cell.dragging { @apply opacity-50 scale-95; }
+  .period-cell.dragging { @apply opacity-50 scale-95; transition: none !important; }
   .period-cell.conflict { @apply border-red-500/60 ring-1 ring-red-500/30; }
 
   /* Drop zone */
@@ -175,7 +176,8 @@
   .text-balance { text-wrap: balance; }
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-  .drag-preview { @apply shadow-glow scale-105 rotate-1 z-50; }
+  .drag-preview { @apply shadow-glow scale-105 rotate-1 z-50 pointer-events-none; transition: none !important; }
+  .drag-preview *, .drag-preview .period-cell { transition: none !important; transform: none !important; }
 }
 
 /* ─── Print Styles ──────────────────────────────────────────────── */
