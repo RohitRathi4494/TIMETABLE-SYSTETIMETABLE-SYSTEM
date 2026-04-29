@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper Functions ──────────────────────────────────────────
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && getUserRole() == 'admin';
+    }
+
+    function isTeacher() {
+      return isSignedIn() && getUserRole() == 'teacher';
+    }
+
+    // ─── User Profiles ────────────────────────────────────────────
+    // Users can read their own profile; admins can read/write all
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAdmin();
+    }
+
+    // ─── School Data ──────────────────────────────────────────────
+    // Both admins and teachers can READ school data
+    // Only admins can WRITE (create, update, delete)
+    match /schools/{schoolId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+
+      // Sub-collections: teachers, subjects, rooms, classes
+      match /{collection}/{docId} {
+        allow read: if isSignedIn();
+        allow write: if isAdmin();
+      }
+
+      // Timetable data
+      match /timetables/{timetableId} {
+        allow read: if isSignedIn();
+        allow write: if isAdmin();
+
+        match /periods/{periodId} {
+          allow read: if isSignedIn();
+          allow write: if isAdmin();
+        }
+      }
+
+      // Substitutions — teachers can add, admins can do everything
+      match /substitutions/{subId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn();       // teachers can log substitutions
+        allow update, delete: if isAdmin();  // only admin can modify/delete
+      }
+    }
+  }
+}
