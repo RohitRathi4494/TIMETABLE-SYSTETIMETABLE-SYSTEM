@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useMemo } from 'react';
+import { createPortal } from 'react-dom';
 import {
   DndContext, DragOverlay, MouseSensor, TouchSensor, KeyboardSensor, useSensor, useSensors,
   useDroppable, useDraggable, closestCenter
@@ -265,18 +266,22 @@ export function TimetableGrid() {
           </table>
         </div>
 
-        <DragOverlay>
-          {activePeriod && (
-            <div className="w-28 h-16 drag-preview rounded-xl overflow-hidden">
-              <PeriodCard
-                period={activePeriod}
-                teacher={teachers.find(t => t.id === activePeriod.teacherId)}
-                subject={subjects.find(s => s.id === activePeriod.subjectId)}
-                cls={classes.find(c => c.id === activePeriod.classId)}
-              />
-            </div>
-          )}
-        </DragOverlay>
+        {createPortal(
+          <DragOverlay dropAnimation={null}>
+            {activePeriod && (
+              <div className="w-32 h-20 drag-preview rounded-xl overflow-hidden pointer-events-none shadow-2xl">
+                <PeriodCard
+                  period={activePeriod}
+                  teacher={teachers.find(t => t.id === activePeriod.teacherId)}
+                  subject={subjects.find(s => s.id === activePeriod.subjectId)}
+                  cls={classes.find(c => c.id === activePeriod.classId)}
+                  compact
+                />
+              </div>
+            )}
+          </DragOverlay>,
+          document.body
+        )}
       </DndContext>
     </div>
   );
