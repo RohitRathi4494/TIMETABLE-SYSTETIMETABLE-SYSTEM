@@ -11,16 +11,24 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthChange(async (firebaseUser) => {
-      if (firebaseUser) {
-        setCurrentUser(firebaseUser);
-        // Fetch role + name from Firestore
-        const profile = await getUserProfile(firebaseUser.uid);
-        setUserProfile(profile);
-      } else {
-        setCurrentUser(null);
-        setUserProfile(null);
+      console.log('Auth state changed:', firebaseUser ? 'Logged in' : 'Logged out');
+      try {
+        if (firebaseUser) {
+          setCurrentUser(firebaseUser);
+          console.log('Fetching user profile for:', firebaseUser.uid);
+          // Fetch role + name from Firestore
+          const profile = await getUserProfile(firebaseUser.uid);
+          console.log('Profile fetched:', profile);
+          setUserProfile(profile);
+        } else {
+          setCurrentUser(null);
+          setUserProfile(null);
+        }
+      } catch (error) {
+        console.error('Error in AuthProvider:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return unsubscribe;
