@@ -40,7 +40,10 @@ export function Sidebar() {
       sidebarCollapsed ? 'w-16' : 'w-60'
     )}>
       {/* Logo */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b border-white/[0.06]">
+      <div className={clsx(
+        'flex items-center border-b border-white/[0.06] py-5',
+        sidebarCollapsed ? 'flex-col gap-4 px-0' : 'flex-row gap-3 px-4'
+      )}>
         <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center shrink-0">
           <Zap size={16} className="text-white" />
         </div>
@@ -52,7 +55,11 @@ export function Sidebar() {
         )}
         <button
           onClick={toggleSidebar}
-          className={clsx('btn-icon text-slate-400 ml-auto', sidebarCollapsed && 'mx-auto')}
+          className={clsx(
+            'btn-icon text-slate-400 transition-colors hover:text-white',
+            sidebarCollapsed ? 'p-1' : 'ml-auto'
+          )}
+          title={sidebarCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
           <ChevronLeft size={16} className={clsx('transition-transform duration-300', sidebarCollapsed && 'rotate-180')} />
         </button>
