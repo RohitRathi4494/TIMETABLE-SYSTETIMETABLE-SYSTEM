@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 const COLORS = ['#6366f1','#8b5cf6','#06b6d4','#22c55e','#f59e0b','#ef4444'];
 
 export default function Dashboard() {
-  const { teachers, subjects, classes, rooms } = useSchoolStore();
+  const { teachers, subjects, classes, rooms, school } = useSchoolStore();
   const { periods } = useTimetableStore();
   const { addToast, toggleAIChat } = useUIStore();
   const navigate = useNavigate();
@@ -46,7 +46,7 @@ export default function Dashboard() {
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-bold text-white">Good morning! 👋</h2>
-          <p className="text-slate-400 mt-0.5">Sunrise International School · Academic Year 2026-27</p>
+          <p className="text-slate-400 mt-0.5">{school?.name || 'Your School'} · Academic Year {school?.academicYear || '2026-27'}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={toggleAIChat} className="btn-primary text-sm">
