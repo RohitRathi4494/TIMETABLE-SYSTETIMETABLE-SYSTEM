@@ -21,8 +21,9 @@ function SubjectForm({ initial = {}, onSave, onClose }) {
           <select className="select" {...f('type')}>{TYPES.map(t => <option key={t} value={t}>{t.charAt(0).toUpperCase()+t.slice(1)}</option>)}</select>
         </div>
         <div>
-          <label className="label">Periods Per Week</label>
+          <label className="label">Default Periods / Week</label>
           <input className="input" type="number" min={1} max={12} {...f('periodsPerWeek')} />
+          <p className="text-slate-500 text-[10px] mt-1">Used as a starting value. You can override per-class in the Setup Wizard.</p>
         </div>
         <div>
           <label className="label">Max Consecutive Periods</label>
@@ -73,6 +74,20 @@ export default function SubjectsPage() {
         <button className="btn-primary" onClick={() => setModal('add')}><Plus size={14} /> Add Subject</button>
       </div>
 
+      {/* Info banner */}
+      <div className="mb-5 flex items-start gap-3 px-4 py-3.5 rounded-xl bg-brand-500/10 border border-brand-500/20">
+        <span className="text-brand-400 text-lg leading-none mt-0.5">ℹ️</span>
+        <div>
+          <p className="text-brand-300 text-sm font-semibold">
+            Periods/Week shown here are defaults only
+          </p>
+          <p className="text-slate-400 text-xs mt-0.5">
+            Each subject can have a <strong className="text-slate-300">different number of periods per class</strong> (e.g. Math may have 6 periods in Class XI but 4 in Class VI).
+            Set the actual count per class in the <span className="text-brand-400 font-semibold">Setup Wizard → Assignments</span> step.
+          </p>
+        </div>
+      </div>
+
       <div className="glass overflow-hidden">
         <div className="p-4 border-b border-white/[0.06]">
           <div className="relative max-w-sm">
@@ -104,7 +119,7 @@ export default function SubjectsPage() {
                 <div className="flex items-center justify-between">
                   <span className={TYPE_COLORS[s.type] + ' badge'}>{s.type}</span>
                   <div className="flex gap-2">
-                    <span className="badge-info badge">{s.periodsPerWeek} periods/week</span>
+                    <span className="badge-info badge" title="Default — override per class in Setup Wizard">~{s.periodsPerWeek} /wk default</span>
                     {s.isDifficult && <span className="badge-warning badge">⭐ Morning</span>}
                     {s.requiresConsecutive && <span className="badge-purple badge">Consecutive</span>}
                   </div>
